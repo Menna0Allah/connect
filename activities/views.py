@@ -1,0 +1,132 @@
+from django.shortcuts import redirect, render
+from .forms import RoomForm
+from .models import *
+from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+
+# Create your views here.
+
+
+def home(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    
+    rooms = Room.objects.filter(
+        Q(topic__name__icontains=q) |
+        Q(name__icontains=q) |
+        Q(description__icontains=q) 
+    ) 
+    room_count = rooms.count()
+    topics = Topic.objects.all()
+    messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+
+    context = {
+        'rooms': rooms, 
+        'room_count': room_count, 
+        'topics': topics, 
+        'messages': messages,
+    }
+
+    return render(request, 'activities/home.html', context)
+
+
+def room(request, pk):
+    room = Room.objects.get(id=pk)
+    messages = room.message_set.all()
+    participants = room.participants.all()
+
+    if request.method == 'POST':
+        message = Message.objects.create(
+            user = request.user,
+            room = room,
+            body = request.POST.get('body'),
+        )
+
+        room.participants.add(request.user)
+        return redirect('room', pk=room.id)
+
+    context = {
+        'room': room,
+        'messages': messages, 
+        'participants':participants
+    }
+
+    return render(request, 'activities/room.html', context)
+
+
+@login_required(login_url='users:login')
+def createRoom(request):
+    form = RoomForm()
+
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            room = form.save(commit=False)
+            room.host = request.user
+
+            new_topic_name = form.cleaned_data['new_topic']
+            if new_topic_name:
+                topic, created = Topic.objects.get_or_create(name=new_topic_name)
+                room.topic = topic
+            else:
+                room.topic = form.cleaned_data['topic']
+
+            room.save()
+            return redirect('home')
+
+    context = {'form': form}
+
+    return render(request, 'activities/room_form.html', context)
+
+
+@login_required(login_url='users:login')
+def updateRoom(request, pk):
+    room = Room.objects.get(id=pk)
+    form = RoomForm(instance=room)
+
+    if request.method == 'POST':
+        form = RoomForm(request.POST, instance=room)
+    
+        if form.is_valid():
+            new_topic_name = form.cleaned_data['new_topic']
+            if new_topic_name:
+                topic, created = Topic.objects.get_or_create(name=new_topic_name)
+                room.topic = topic
+            else:
+                room.topic = form.cleaned_data['topic']
+            form.save()
+            return redirect('home')
+    
+    if request.user != room.host:
+        raise PermissionDenied("You can only update your own rooms.")
+        
+    context = {'form':form}
+    return render(request, 'activities/room_form.html', context)
+
+
+@login_required(login_url='users:login')
+def deleteRoom(request, pk):
+    room = Room.objects.get(id=pk)
+
+    if request.method == 'POST':
+        room.delete()
+        return redirect('home')
+    
+    if request.user != room.host:
+        raise PermissionDenied("You can only update your own rooms.")
+
+    return render(request, 'activities/delete.html', {'obj': room})   
+
+
+@login_required(login_url='users:login')
+def deleteMessage(request, pk):
+    message = Message.objects.get(id=pk)
+
+    if request.method == 'POST':
+        message.delete()
+        return redirect('home')
+    
+    if request.user != message.user:
+        raise PermissionDenied("You can only update your own messages.")
+
+    return render(request, 'activities/delete.html', {'obj': message})   
