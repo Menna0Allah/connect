@@ -55,8 +55,8 @@ def registerPage(request):
     return render(request, 'users/login_register.html',{'form':form})
 
 
-def userProfile(request,pk):
-    user = User.objects.get(id=pk)
+def userProfile(request,username):
+    user = User.objects.get(username=username)
     rooms = user.room_set.all()
     room_message = user.message_set.all()
     topics = Topic.objects.all()

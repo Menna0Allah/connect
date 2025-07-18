@@ -1,64 +1,90 @@
 {% extends 'main.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
-
-<style>
-    .room-container{
-        display: grid;
-        grid-template-columns: 3fr 1fr;
-    }
-</style>
-
-<div class="room-container">
-
-    <div>
-
-        <h1>{{room.name}}</h1>
-    
-        <p>{{room.description}}</p>
-    
-        <div class="comment-wrapper">
-
-            <h3>Conversation</h3>
-            <hr>
-    
-            {% for message in messages %}
-            <div>
-                {% if request.user == message.user %}
-                <a href="{% url 'delete-message' message.id %}">Delete</a>
+<div class="row justify-content-center">
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">{{ room.name }}</h2>
+                <hr class="border border-2 opacity-62">
+                <p class="card-text text-muted">Topic: {{ room.topic.name }}</p>
+                <p class="card-text" style="padding: 8px 0;">{{ room.description }}</p>
+                <h4>Conversation</h4>
+                {% if request.user.is_authenticated %}
+                    <form method="post" class="mt-2 mb-3">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <textarea name="body" class="form-control" placeholder="Write a message..." rows="3"></textarea>
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </div>
+                    </form>
                 {% endif %}
-                <small>@{{message.user}}  {{message.created|timesince}} ago</small>
-                <p>{{message.body}}</p>
-                <hr>
+                {% for message in messages %}
+                    <div class="message">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="mb-0"><strong>@{{ message.user }}</strong> {{ message.created|timesince }} ago</p>
+                            {% if request.user == message.user %}
+                                <div class="dropdown">
+                                    <button class="btn btn-transparent dropdown-toggle no-arrow" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end menu-sm">
+                                        <li><a href="{% url 'delete-message' message.id %}" class="dropdown-item text-danger">Delete</a></li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <p>{{ message.body }}</p>
+                    </div>
+                {% empty %}
+                    <p>No messages yet.</p>
+                {% endfor %}
             </div>
-            {% endfor %}
-
         </div>
-    
-        {% if request.user.is_authenticated %}
-        <div class="comment-form">
-
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="text" name="body" placeholder="write you message here...">
-            </form>
-
-        </div>
-        {% endif %}
-         
     </div>
-
-    <div>
-        <h3>participants</h3>
-        <hr>
-
-        {% for user in participants %}
-            <div>
-                <p><a href="{% url 'users:user-profile' user.id %}">@{{user.username}}</a></p>
+    <div class="col-md-3">
+        <div class="card first">
+             <div class="card-body">
+                 <h4>Participants</h4>
+                 <div class="text-success">
+                     <hr>
+                 </div>
+                {% if participants %}
+                <ul class="list-group list-group-flush mb-3">
+                    {% for user in participants %}
+                        <li class="list-group-item"><a href="{% url 'users:user-profile' user.username %}">@{{ user.username }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                    <p class="text-muted">No participants found.</p>
+                {% endif %}
+             </div>
+        </div>
+        <div class="card second">
+            <div class="card-body">
+                <h4 class="custom-title">
+                    <span class="title-tag">Explore...</span>
+                    <span>Related Rooms on Topic: <span class="topic-highlight" style="font-size: 35px;">{{ room.topic.name }}</span></span>
+                </h4>
+                <div class="text-success">
+                    <hr>
+                </div>
+                {% if related_rooms %}
+                    <ul class="list-group list-group-flush">
+                        {% for related_room in related_rooms %}
+                        <li class="list-group-item list-group-item-action">
+                            <a href="{% url 'room' related_room.id %}">{{ related_room.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No related rooms found.</p>
+                {% endif %}
             </div>
-        {% endfor %}
+        </div>
     </div>
-
 </div>
-
 {% endblock %}

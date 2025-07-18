@@ -1,5 +1,5 @@
 from django import template
-from activities.models import Message, Topic
+from activities.models import Topic, Message
 
 register = template.Library()
 
@@ -10,5 +10,9 @@ def topics_list():
 
 @register.inclusion_tag('activities/activity_component.html')
 def recent_activity():
-    messages = Message.objects.all().order_by('-created')[0:5]
+    messages = Message.objects.all()[:5]
     return {'messages': messages}
+
+@register.filter
+def model_name(obj):
+    return obj.__class__.__name__

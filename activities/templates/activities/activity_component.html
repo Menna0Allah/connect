@@ -1,11 +1,44 @@
-<h5>Recent Activity</h5>
-<hr>
-{% for message in messages %}
-<small><a href="{% url 'users:user-profile' message.user.id %}">@{{message.user}}</a> {{message.created|timesince}}</small>
-<small>replied to "{{message.room}}"</small>
-<p>{{message}}</p>
-{% if request.user == message.user %}
-<a href="{% url 'delete-message' message.id %}">Delete</a>
-{% endif %}
-<hr>
-{% endfor %}
+<div class="card card-activity mb-3">
+    <div class="card-body">
+        <h3 class="card-title">Recent Activity</h3>
+        {% for message in messages %}
+            <div class="message mt-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="mb-0">
+                        <strong style="margin-right: 7px;">
+                            <a class="link-offset-2 link-underline link-underline-opacity-0" href="{% url 'users:user-profile' message.user.username %}">@{{ message.user }}</a>
+                        </strong> 
+                        <small>
+                            {{ message.created|timesince }} ago
+                        </small>
+                    </p>
+
+                    {% if request.user == message.user %}
+                        <div class="dropdown">
+                            <button class="btn btn-transparent dropdown-toggle no-arrow" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                                </svg>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end menu-sm">
+                                <li><a href="{% url 'delete-message' message.id %}" class="dropdown-item text-danger">Delete</a></li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
+                </div>
+                <p class="mt-2 mb-0">
+                    replied to <a 
+                    href="{% url 'room' message.room.id %}" 
+                    class="link-underline link-underline-opacity-0"
+                    style="color: #F96E2A"
+                    >"{{ message.room }}"</a>
+                </p>
+                <p class="mt-1 fs-4" style="width: 75%;">{{ message.body }}</p>
+                <p class="" style="color: #9cafa8;">Topic: {{ message.room.topic }}</p>
+            </div>
+        {% empty %}
+            <p>No recent activity.</p>
+        {% endfor %}
+    </div>
+</div>

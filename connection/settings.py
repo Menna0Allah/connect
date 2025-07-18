@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'activities.apps.ActivitiesConfig',
     'users.apps.UsersConfig',
+
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
@@ -67,6 +69,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'activity_tags': 'activities.templatetags.activity_tags',
+            },
         },
     },
 ]

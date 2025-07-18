@@ -32,8 +32,11 @@ def home(request):
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
-    messages = room.message_set.all()
+    messages = room.message_set.all().order_by('-created')
     participants = room.participants.all()
+
+    # Query related rooms with the same topic, excluding the current room
+    related_rooms = Room.objects.filter(topic=room.topic).exclude(id=pk).order_by('-updated')
 
     if request.method == 'POST':
         message = Message.objects.create(
@@ -48,7 +51,8 @@ def room(request, pk):
     context = {
         'room': room,
         'messages': messages, 
-        'participants':participants
+        'participants':participants,
+        'related_rooms':related_rooms,
     }
 
     return render(request, 'activities/room.html', context)

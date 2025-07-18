@@ -1,10 +1,41 @@
-<h5>Browse Topics</h5>
-<hr>
-<a href="{% url 'home' %}">All</a>
-<hr>
-{% for topic in topics %}
-<div>
-    <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+<div class="card mb-3">
+    <div class="card-body">
+        <h3 class="card-title">Browse Topics</h3>
+        <ul class="list-group">
+            <li 
+            class="
+            list-group-item list-group-item-action 
+            {% if not request.GET.q %}active{% endif %}
+            " 
+            aria-current="{% if not request.GET.q %}true{% else %}false{% endif %}
+            "
+            style="margin-bottom: 4px;"
+            >
+                <a href="{% url 'home' %}">All</a>
+            </li>
+            {% for topic in topics %}
+                <li 
+                class="
+                list-group-item list-group-item-action 
+                {% if request.GET.q == topic.name %}active{% endif %}
+                " 
+                aria-current="{% if request.GET.q == topic.name %}true{% else %}false{% endif %}">
+                    <a href="?q={{ topic.name }}">{{ topic.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
-<hr>
-{% endfor %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const items = document.querySelectorAll('.list-group-item');
+
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                items.forEach(i => i.classList.remove('.active'));
+                item.classList.add('.active');
+            });
+        });
+    });
+</script>

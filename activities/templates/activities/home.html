@@ -1,36 +1,37 @@
 {% extends 'main.html' %}
+{% load widget_tweaks %}
+{% load static %}
 
 {% block content %}
-
-<style>
-    .container{
-        display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
-    }
-</style>
-
-
-
-<div class="container">
-    
-    <div>
+<div class="row">
+    <div class="col-md-8">
+        {% if request.user.is_authenticated %}
+        <h6 style="color: #c5c5c5 ;">{{ room_count }} room{{ room_count|pluralize }} available</h6>
+        <form method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search rooms..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+        <a href="{% url 'create-room' %}" class="btn btn-primary mb-3 create-btn">Create Room</a>
+        {% endif %}
+        {% include 'activities/feed_component.html' with rooms=rooms %}
+    </div>
+    <div class="col-md-4">
         {% include 'activities/topics_component.html' %}
+        {% include 'activities/activity_component.html' with messages=messages %}
     </div>
-    
-    <div>
-        <h5>{{room_count}} room-s available</h5>
-        <hr>
-        <a href="{% url 'create-room' %}">Create Room</a>
-        <hr>
-
-        {% include 'activities/feed_component.html' %}
-    </div>
-
-    <div>
-        {% include 'activities/activity_component.html' %}
-    </div>
-
 </div>
 
+<script src="https://unpkg.com/lottie-web@latest/build/player/lottie.min.js"></script>
 
-{% endblock content %}
+<script>
+  lottie.loadAnimation({
+    container: document.getElementById('lottie-character'),
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: "{% static 'animations/wink.json' %}" // Replace with your JSON path
+  });
+</script>
+{% endblock %}

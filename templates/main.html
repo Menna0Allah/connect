@@ -3,15 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{% block title %}Connection App{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text-fill" viewBox="0 0 16 16">
+                    <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1z"/>
+                </svg>
+                <span>Connection</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="nav-link">Hello {{ request.user }}</span>
+                        </li>
+                        <li class="nav-item">
+                                <a href="{% url 'users:user-profile' request.user.username %}"
+                                class="nav-link"
+                                >Your profile</a>
+                        </li>
+                        <li class="nav-item L">
+                            <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:register' %}">sign up</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% if not request.user.is_authenticated and request.path == "/" %}
+    <div class="not-login-container">
+        <div class="not-login row align-items-center">
 
-    {% include 'navbar.html' %}
-    
-    {% block content %}
+            <!-- Left: Text -->
+            <div class="col-md-6">
+                <div class="welcome-text">
+                    <h1>
+                    Welcome to <span class="brand-name">Connection</span> Platform
+                    </h1>
+                    <h4>
+                    This platform enables you to create topics of interest in designated spaces, connecting you with a global community passionate about the same subjects<br>
+                    hence the name "Connection."
+                    </h4>
+                    <p>
+                    If you are new, we invite you to register an account to fully engage with our community.
+                    </p>
+                    <a href="{% url 'users:login' %}" class="btn btn-primary mb-3 login-btn">Login</a>
+                </div>
+            </div>
 
-    {% endblock content %}
+            <!-- Right: Image -->
+            <div class="col-md-6 d-flex justify-content-center">
+                <div id="lottie-character"></div>
+            </div>
 
+        </div>
+        <hr class="w-hr">
+    </div>
+    <div class="scroll-down text-center mt-3">
+        <p>Tap for Scroll down</p>
+        <a href="#more-content" class="animated-arrow d-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#ffd900" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
+            </svg>
+        </a>
+    </div>
+    {% endif %}
+    <div class="container mt-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const notLoginSection = document.querySelector('.not-login-container');
+
+        // Check if this is NOT the homepage
+        if (window.location.pathname !== '/') {
+            if (notLoginSection) {
+                notLoginSection.style.display = 'none';
+            }
+        }
+    });
+    </script>
 </body>
 </html>
