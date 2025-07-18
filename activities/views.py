@@ -36,7 +36,7 @@ def room(request, pk):
     participants = room.participants.all()
 
     # Query related rooms with the same topic, excluding the current room
-    related_rooms = Room.objects.filter(topic=room.topic).exclude(id=pk).order_by('-updated')
+    related_rooms = Room.objects.filter(topic=room.topic).exclude(id=pk).order_by('-updated')[:5]
 
     if request.method == 'POST':
         message = Message.objects.create(
