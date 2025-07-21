@@ -1,4 +1,5 @@
-from django.shortcuts import redirect, render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from .forms import RoomForm
 from .models import *
 from django.db.models import Q
@@ -19,12 +20,16 @@ def home(request):
     room_count = rooms.count()
     topics = Topic.objects.all()
     messages = Message.objects.filter(Q(room__topic__name__icontains=q))
-
+    liked_rooms = set()
+    if request.user.is_authenticated:
+        liked_rooms = set(RoomLike.objects.filter(user=request.user).values_list('room_id', flat=True))
+    
     context = {
         'rooms': rooms, 
         'room_count': room_count, 
         'topics': topics, 
         'messages': messages,
+        'liked_rooms': liked_rooms,
     }
 
     return render(request, 'activities/home.html', context)
@@ -34,6 +39,11 @@ def room(request, pk):
     room = Room.objects.get(id=pk)
     messages = room.message_set.all().order_by('-created')
     participants = room.participants.all()
+    liked_rooms = set()
+    liked_messages = set()
+    if request.user.is_authenticated:
+        liked_rooms = set(RoomLike.objects.filter(user=request.user).values_list('room_id', flat=True))
+        liked_messages = set(MessageLike.objects.filter(user=request.user).values_list('message_id', flat=True))
 
     # Query related rooms with the same topic, excluding the current room
     related_rooms = Room.objects.filter(topic=room.topic).exclude(id=pk).order_by('-updated')[:5]
@@ -53,6 +63,8 @@ def room(request, pk):
         'messages': messages, 
         'participants':participants,
         'related_rooms':related_rooms,
+        'liked_rooms': liked_rooms,
+        'liked_messages': liked_messages,
     }
 
     return render(request, 'activities/room.html', context)
@@ -134,3 +146,38 @@ def deleteMessage(request, pk):
         raise PermissionDenied("You can only update your own messages.")
 
     return render(request, 'activities/delete.html', {'obj': message})   
+
+# Added: AJAX views for liking/unliking rooms and messages
+@login_required(login_url='users:login')
+def like_room(request, pk):
+    room = get_object_or_404(Room, id=pk)
+    liked = RoomLike.objects.filter(user=request.user, room=room).exists()
+    
+    if liked:
+        RoomLike.objects.filter(user=request.user, room=room).delete()
+        liked = False
+    else:
+        RoomLike.objects.create(user=request.user, room=room)
+        liked = True
+    
+    return JsonResponse({
+        'liked': liked,
+        'like_count': room.likes.count(),
+    })
+
+@login_required(login_url='users:login')
+def like_message(request, pk):
+    message = get_object_or_404(Message, id=pk)
+    liked = MessageLike.objects.filter(user=request.user, message=message).exists()
+    
+    if liked:
+        MessageLike.objects.filter(user=request.user, message=message).delete()
+        liked = False
+    else:
+        MessageLike.objects.create(user=request.user, message=message)
+        liked = True
+    
+    return JsonResponse({
+        'liked': liked,
+        'like_count': message.likes.count(),
+    })

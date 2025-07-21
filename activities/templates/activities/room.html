@@ -10,6 +10,14 @@
                 <hr class="border border-2 opacity-62">
                 <p class="card-text text-muted">Topic: {{ room.topic.name }}</p>
                 <p class="card-text" style="padding: 8px 0;">{{ room.description }}</p>
+                {% if request.user.is_authenticated %}
+                    <div class="d-flex align-items-center mb-3">
+                        <button class="like-btn {% if room.id in liked_rooms %}liked{% endif %}" data-type="room" data-id="{{ room.id }}" title="{% if room.id in liked_rooms %}Unlike{% else %}Like{% endif %}">
+                            <i class="bi bi-heart{% if room.id in liked_rooms %}-fill{% endif %}"></i>
+                            <span class="like-count">{{ room.likes.count }}</span>
+                        </button>
+                    </div>
+                {% endif %}
                 <h4>Conversation</h4>
                 {% if request.user.is_authenticated %}
                     <form method="post" class="mt-3">
@@ -38,6 +46,14 @@
                             {% endif %}
                         </div>
                         <p>{{ message.body }}</p>
+                        {% if request.user.is_authenticated %}
+                            <div class="d-flex align-items-center">
+                                <button class="like-btn {% if message.id in liked_messages %}liked{% endif %}" data-type="message" data-id="{{ message.id }}" title="{% if message.id in liked_messages %}Unlike{% else %}Like{% endif %}">
+                                    <i class="bi bi-heart{% if message.id in liked_messages %}-fill{% endif %}"></i>
+                                    <span class="like-count">{{ message.likes.count }}</span>
+                                </button>
+                            </div>
+                        {% endif %}
                     </div>
                 {% empty %}
                     <p>No messages yet.</p>

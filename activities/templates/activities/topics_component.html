@@ -11,18 +11,31 @@
             "
             style="margin-bottom: 4px;"
             >
+            {% if request.user.is_authenticated %}
                 <a href="{% url 'home' %}">All</a>
+            {% else %}
+                <a href="{% url 'users:login' %}?next={% url 'home' %}">All</a>
+            {% endif %}
             </li>
             {% for topic in topics %}
-                <li 
-                class="
-                list-group-item list-group-item-action 
-                {% if request.GET.q == topic.name %}active{% endif %}
-                " 
-                aria-current="{% if request.GET.q == topic.name %}true{% else %}false{% endif %}">
-                    <a href="?q={{ topic.name }}">{{ topic.name }}</a>
-                </li>
+            <li 
+            class="
+            list-group-item list-group-item-action 
+            {% if request.GET.q == topic.name %}active{% endif %}
+            " 
+            aria-current="{% if request.GET.q == topic.name %}true{% else %}false{% endif %}">
+                {% if request.user.is_authenticated %}
+                    <a href="?q={{ topic.name }}">
+                        {{ topic.name }}
+                    </a>
+                {% else %}
+                    <a href="{% url 'users:login' %}?next={% url 'home' %}?q={{ topic.name }}">
+                        {{ topic.name }}
+                    </a>
+                {% endif %}
+            </li>
             {% endfor %}
+                    
         </ul>
     </div>
 </div>

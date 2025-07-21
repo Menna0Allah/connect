@@ -2,31 +2,172 @@
 {% load widget_tweaks activity_tags %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="profile-header">
-                <h2 class="mb-0">Hello {{ user.username }}</h2>
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
+            {% if request.user.id == user.id %}
+
+                {% if messages %}
+                    <div class="alert alert-dismissible">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="card">
+                    <div class="profile-header d-flex align-items-center gap-3 pt-8" style="padding-left: 25px !important;">
+                        {% if user_profile.photo %}
+                            <img src="{{ user_profile.photo.url }}" alt="{{ user.username }}'s profile photo" class="profile-photo rounded-circle mb-1 shadow-lg border border-2 border-white" style="width: 80px; height: 80px;">
+                        {% else %}
+                            <div class="mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        <h3>Hello {{ user.username }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <h5>User Information</h5>
+                        <hr>
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <hr class="border border-2 opacity-62">
+                        <p><strong>Join Date:</strong> {{ join_date|date:"F d, Y" }}</p>
+                        <hr class="border border-2 opacity-62">
+                        <p><strong>First Room:</strong> {% if first_room %}<a href="{% url 'room' first_room.id %}" class="link-underline link-underline-opacity-0">{{ first_room.name }}</a>{% else %}None{% endif %}</p>
+                        <hr class="border border-2 opacity-62">
+                        <p><strong>First Message:</strong> {% if first_message %}{{ first_message.body|truncatewords:10 }} (in <a href="{% url 'room' first_message.room.id %}" class="link-underline link-underline-opacity-0">{{ first_message.room.name }}</a>){% else %}None{% endif %}</p>
+                        <hr class="border border-2 opacity-62">
+        
+                        <h5 class="mt-4">Update Profile Photo</h5>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if user_profile.photo %}
+                                <input type="checkbox" name="photo-clear" id="id_photo-clear">
+                                <label for="id_photo-clear">Clear</label><br>
+                            {% endif %}
+                            <label for="id_photo">Change:</label>
+                            <input type="file" name="photo" id="id_photo" class="form-control">
+                            {% if profile_form.errors %}
+                                <div class="errorlist">
+                                    {% for error in profile_form.errors.photo %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <button type="submit" name="profile_submit" class="btn btn-primary mt-2">Update Photo</button>
+                        </form>
+                        
+                        <hr class="border border-2 opacity-62">
+                        <h5 class="mt-4">Change Username</h5>
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ username_form.username|add_class:"form-control" }}
+                            {% if username_form.errors %}
+                                <div class="errorlist">
+                                    {% for error in username_form.errors.username %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <button type="submit" name="username_submit" class="btn btn-primary mt-2">Update Username</button>
+                        </form>
+                        <hr class="border border-2 opacity-62">
+                        <h5 class="mt-4">Change Password</h5>
+                        <form method="POST">
+                            {% csrf_token %}
+                            {% for field in password_form %}
+                                <div class="mb-3">
+                                    {{ field.label_tag }}
+                                    {{ field|add_class:"form-control" }}
+                                    {% if field.errors %}
+                                        <div class="errorlist">{{ field.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <button type="submit" name="password_submit" class="btn btn-primary mt-2">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+                
+  
+            {% else %}
+                
+                {% if messages %}
+                    <div class="alert alert-dismissible">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="card">
+                    <div class="profile-header d-flex align-items-center gap-3 pt-8" style="padding-left: 25px !important;">
+                        {% if user_profile.photo %}
+                            <img src="{{ user_profile.photo.url }}" alt="{{ user.username }}'s profile photo" class="profile-photo rounded-circle mb-1 shadow-lg border border-2 border-white" style="width: 80px; height: 80px;">
+                        {% else %}
+                            <div class="mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        <h3>{{ user.username }}'s profile</h3>
+                    </div>
+                    <div class="card-body">
+                        <h5>User Information</h5>
+                        <hr>
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <hr class="border border-2 opacity-62">
+                        <p><strong>Join Date:</strong> {{ join_date|date:"F d, Y" }}</p>
+                        <hr class="border border-2 opacity-62">
+                        <p><strong>First Room:</strong> {% if first_room %}<a href="{% url 'room' first_room.id %}">{{ first_room.name }}</a>{% else %}None{% endif %}</p>
+                        <hr class="border border-2 opacity-62">
+                        <p><strong>First Message:</strong> {% if first_message %}{{ first_message.body|truncatewords:10 }} (in <a href="{% url 'room' first_message.room.id %}">{{ first_message.room.name }}</a>){% else %}None{% endif %}</p>
+                    </div>
+                </div>
+                
+                
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
             <div class="card-body">
-                <div class="username">
-                    <h4>Username: {{user.username}}</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title mb-3">Rooms {{user.username}} has made</h3>
+                        {% include 'activities/feed_component.html' with rooms=rooms %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-8">
-        <div class="card">
+        <div class="col-md-6">
             <div class="card-body">
-                <h3>Rooms you made</h3>
-                {% include 'activities/feed_component.html' with rooms=rooms %}
+                <div class="card likes-section mt-3">
+                    <div class="card-body">
+                        <h4>Liked Content</h4>
+                        {% for like in user.roomlike_set.all %}
+                        <div class="like-item">
+                            <a href="{% url 'room' like.room.id %}">{{ like.room.name }}</a> (Room, liked on {{ like.created_at|date:"F j, Y" }})
+                        </div>
+                        {% endfor %}
+                        {% for like in user.messagelike_set.all %}
+                        <div class="like-item">
+                            <a href="{% url 'room' like.message.room.id %}">{{ like.message.body|truncatewords:10 }}</a> (Message in {{ like.message.room.name }}, liked on {{ like.message.created_at|date:"F j, Y" }})
+                        </div>
+                        {% endfor %}
+                        {% if not user.roomlike_set.exists and not user.messagelike_set.exists %}
+                        <p>No liked content.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% include 'activities/activity_component.html' with messages=user_messages %}
             </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div>
-            {% topics_list %}
-            {% recent_activity %}
         </div>
     </div>
 </div>

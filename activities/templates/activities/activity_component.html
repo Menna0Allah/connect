@@ -6,7 +6,11 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <p class="mb-0">
                         <strong style="margin-right: 7px;">
-                            <a class="link-offset-2 link-underline link-underline-opacity-0" href="{% url 'users:user-profile' message.user.username %}">@{{ message.user }}</a>
+                            {% if request.user.is_authenticated %}
+                                <a class="link-offset-2 link-underline link-underline-opacity-0" href="{% url 'users:user-profile' message.user.username %}">@{{ message.user }}</a>
+                            {% else %}
+                                <a class="link-offset-2 link-underline link-underline-opacity-0" href="{% url 'users:login' %}?next={% url 'users:user-profile' message.user.username %}">@{{ message.user }}</a>
+                            {% endif %}
                         </strong> 
                         <small>
                             {{ message.created|timesince }} ago
@@ -28,11 +32,19 @@
                     
                 </div>
                 <p class="mt-2 mb-0">
-                    replied to <a 
-                    href="{% url 'room' message.room.id %}" 
-                    class="link-underline link-underline-opacity-0"
-                    style="color: #F96E2A"
-                    >"{{ message.room }}"</a>
+                    {% if request.user.is_authenticated %}
+                        replied to <a 
+                        href="{% url 'room' message.room.id %}" 
+                        class="link-underline link-underline-opacity-0"
+                        style="color: #F96E2A"
+                        >"{{ message.room }}"</a>
+                    {% else %}
+                        replied to <a 
+                        href="{% url 'users:login' %}?next={% url 'room' message.room.id %}" 
+                        class="link-underline link-underline-opacity-0"
+                        style="color: #F96E2A"
+                        >"{{ message.room }}"</a>
+                    {% endif %}
                 </p>
                 <p class="mt-1 fs-4" style="width: 75%;">{{ message.body }}</p>
                 <p class="" style="color: #9cafa8;">Topic: {{ message.room.topic }}</p>

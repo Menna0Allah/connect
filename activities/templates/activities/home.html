@@ -15,11 +15,15 @@
         </form>
         <a href="{% url 'create-room' %}" class="btn btn-primary mb-3 create-btn">Create Room</a>
         {% endif %}
-        {% include 'activities/feed_component.html' with rooms=rooms %}
+        <div id="content-to-blur">
+            {% include 'activities/feed_component.html' %}
+        </div>
     </div>
     <div class="col-md-4">
-        {% include 'activities/topics_component.html' %}
-        {% include 'activities/activity_component.html' with messages=messages %}
+        <div id="content-to-blur">
+            {% include 'activities/topics_component.html' %}
+            {% include 'activities/activity_component.html' %}
+        </div>
     </div>
 </div>
 
