@@ -30,25 +30,26 @@
                         <h3>Hello {{ user.username }}</h3>
                     </div>
                     <div class="card-body">
-                        <h5>User Information</h5>
-                        <hr>
+                        <h3 class="mt-1 fw-semibold">User Information</h3>
+                        <hr class="hr-first">
                         <p><strong>Username:</strong> {{ user.username }}</p>
-                        <hr class="border border-2 opacity-62">
+                        <hr class="hr-user border border-1 opacity-62">
                         <p><strong>Join Date:</strong> {{ join_date|date:"F d, Y" }}</p>
-                        <hr class="border border-2 opacity-62">
+                        <hr class="hr-user border border-1 opacity-62">
                         <p><strong>First Room:</strong> {% if first_room %}<a href="{% url 'room' first_room.id %}" class="link-underline link-underline-opacity-0">{{ first_room.name }}</a>{% else %}None{% endif %}</p>
-                        <hr class="border border-2 opacity-62">
+                        <hr class="hr-user border border-1 opacity-62">
                         <p><strong>First Message:</strong> {% if first_message %}{{ first_message.body|truncatewords:10 }} (in <a href="{% url 'room' first_message.room.id %}" class="link-underline link-underline-opacity-0">{{ first_message.room.name }}</a>){% else %}None{% endif %}</p>
-                        <hr class="border border-2 opacity-62">
+                        <hr class="hr-user border border-1 opacity-62">
         
-                        <h5 class="mt-4">Update Profile Photo</h5>
+                        <h3 class="mt-4 mb-3 fw-semibold">Edit Your Profile</h3>
+                        <h5 class="mt-4 mb-3">Update Profile Photo</h5>
                         <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             {% if user_profile.photo %}
                                 <input type="checkbox" name="photo-clear" id="id_photo-clear">
                                 <label for="id_photo-clear">Clear</label><br>
                             {% endif %}
-                            <label for="id_photo">Change:</label>
+                            <label for="id_photo" style="margin: 1rem 0;">Change:</label>
                             <input type="file" name="photo" id="id_photo" class="form-control">
                             {% if profile_form.errors %}
                                 <div class="errorlist">
@@ -57,11 +58,11 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                            <button type="submit" name="profile_submit" class="btn btn-primary mt-2">Update Photo</button>
+                            <button type="submit" name="profile_submit" class="btn btn-primary mt-3 mb-3">Update Photo</button>
                         </form>
                         
-                        <hr class="border border-2 opacity-62">
-                        <h5 class="mt-4">Change Username</h5>
+                        <hr class="hr-user border border-2 opacity-62">
+                        <h5 class="mt-4 mb-4">Change Username</h5>
                         <form method="POST">
                             {% csrf_token %}
                             {{ username_form.username|add_class:"form-control" }}
@@ -72,10 +73,10 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                            <button type="submit" name="username_submit" class="btn btn-primary mt-2">Update Username</button>
+                            <button type="submit" name="username_submit" class="btn btn-primary mt-3 mb-3">Update Username</button>
                         </form>
-                        <hr class="border border-2 opacity-62">
-                        <h5 class="mt-4">Change Password</h5>
+                        <hr class="hr-user border border-1 opacity-62">
+                        <h5 class="mt-4 mb-4">Change Password</h5>
                         <form method="POST">
                             {% csrf_token %}
                             {% for field in password_form %}
@@ -87,7 +88,7 @@
                                     {% endif %}
                                 </div>
                             {% endfor %}
-                            <button type="submit" name="password_submit" class="btn btn-primary mt-2">Update Password</button>
+                            <button type="submit" name="password_submit" class="btn btn-primary mt-3 mb-3">Update Password</button>
                         </form>
                     </div>
                 </div>
@@ -114,18 +115,18 @@
                                 </svg>
                             </div>
                         {% endif %}
-                        <h3>{{ user.username }}'s profile</h3>
+                        <h3>{{ user.username }}</h3>
                     </div>
                     <div class="card-body">
-                        <h5>User Information</h5>
-                        <hr>
+                        <h3 class="mt-1 fw-semibold">User Information</h3>
+                        <hr class="hr-first">
                         <p><strong>Username:</strong> {{ user.username }}</p>
-                        <hr class="border border-2 opacity-62">
+                        <hr class="hr-user border border-1 opacity-62">
                         <p><strong>Join Date:</strong> {{ join_date|date:"F d, Y" }}</p>
-                        <hr class="border border-2 opacity-62">
-                        <p><strong>First Room:</strong> {% if first_room %}<a href="{% url 'room' first_room.id %}">{{ first_room.name }}</a>{% else %}None{% endif %}</p>
-                        <hr class="border border-2 opacity-62">
-                        <p><strong>First Message:</strong> {% if first_message %}{{ first_message.body|truncatewords:10 }} (in <a href="{% url 'room' first_message.room.id %}">{{ first_message.room.name }}</a>){% else %}None{% endif %}</p>
+                        <hr class="hr-user border border-1 opacity-62">
+                        <p><strong>First Room:</strong> {% if first_room %}<a href="{% url 'room' first_room.id %}" class="link-underline link-underline-opacity-0">{{ first_room.name }}</a>{% else %}None{% endif %}</p>
+                        <hr class="hr-user border border-1 opacity-62">
+                        <p><strong>First Message:</strong> {% if first_message %}{{ first_message.body|truncatewords:10 }} (in <a href="{% url 'room' first_message.room.id %}" class="link-underline link-underline-opacity-0">{{ first_message.room.name }}</a>){% else %}None{% endif %}</p>
                     </div>
                 </div>
                 

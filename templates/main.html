@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +14,14 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <!-- Added Bootstrap Icons for password toggle -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Added for dark mode -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <script src="{% static 'js/theme.js' %}"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg">
@@ -49,6 +57,11 @@
                             <a class="nav-link" href="{% url 'users:register' %}">sign up</a>
                         </li>
                     {% endif %}
+                    <li class="nav-item dark-light-mobile">
+                        <button id="theme-toggle" class="btn-light-dark btn btn-outline-secondary ms-2" title="Toggle Dark Mode">
+                            <i class="bi bi-sun-fill"></i>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
