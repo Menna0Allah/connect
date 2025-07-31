@@ -5,6 +5,7 @@ from .models import *
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator  # Added for pagination
 
 # Create your views here.
 
@@ -19,7 +20,7 @@ def home(request):
     ) 
     room_count = rooms.count()
     topics = Topic.objects.all()
-    messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+    messages = Message.objects.filter(Q(room__topic__name__icontains=q))[:room_count]
     liked_rooms = set()
     if request.user.is_authenticated:
         liked_rooms = set(RoomLike.objects.filter(user=request.user).values_list('room_id', flat=True))
@@ -146,6 +147,20 @@ def deleteMessage(request, pk):
         raise PermissionDenied("You can only update your own messages.")
 
     return render(request, 'activities/delete.html', {'obj': message})   
+
+@login_required(login_url='users:login')
+def allActivities(request):
+    messages = Message.objects.all().order_by('-created')
+    # Updated: Added pagination for all activities
+    paginator = Paginator(messages, 10)  # Show 10 messages per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'messages': page_obj,
+    }
+    
+    return render(request, 'activities/all_activities.html', context)
 
 # Added: AJAX views for liking/unliking rooms and messages
 @login_required(login_url='users:login')

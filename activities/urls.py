@@ -10,4 +10,5 @@ urlpatterns = [
     path('delete-message/<int:pk>', views.deleteMessage, name='delete-message'),
     path('like-room/<int:pk>', views.like_room, name='like-room'),
     path('like-message/<int:pk>', views.like_message, name='like-message'),
+    path('all-activities/', views.allActivities, name='all-activities'),
 ]

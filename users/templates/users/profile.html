@@ -93,7 +93,6 @@
                     </div>
                 </div>
                 
-  
             {% else %}
                 
                 {% if messages %}
@@ -130,44 +129,50 @@
                     </div>
                 </div>
                 
-                
             {% endif %}
-        </div>
-    </div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card-body">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title mb-3">Rooms {{user.username}} has made</h3>
-                        {% include 'activities/feed_component.html' with rooms=rooms %}
+
+            <!-- Updated: Tabbed interface for Rooms, Liked Content, and Recent Activity -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-3" id="profileTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="rooms-tab" data-bs-toggle="tab" data-bs-target="#rooms" type="button" role="tab" aria-controls="rooms" aria-selected="true">Rooms</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="liked-content-tab" data-bs-toggle="tab" data-bs-target="#liked-content" type="button" role="tab" aria-controls="liked-content" aria-selected="false">Liked Content</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="recent-activity-tab" data-bs-toggle="tab" data-bs-target="#recent-activity" type="button" role="tab" aria-controls="recent-activity" aria-selected="false">Recent Activity</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="profileTabsContent">
+                        <div class="tab-pane fade show active" id="rooms" role="tabpanel" aria-labelledby="rooms-tab">
+                            <h3 class="card-title mb-3">Rooms {{ user.username }} has made</h3>
+                            {% include 'activities/feed_component.html' with rooms=rooms %}
+                        </div>
+                        <div class="tab-pane fade" id="liked-content" role="tabpanel" aria-labelledby="liked-content-tab">
+                            <h3 class="card-title mb-3">Liked Content</h3>
+                            <div class="likes-section">
+                                {% for like in user.roomlike_set.all %}
+                                <div class="like-item">
+                                    <a href="{% url 'room' like.room.id %}">{{ like.room.name }}</a> (Room, liked on {{ like.created_at|date:"F j, Y" }})
+                                </div>
+                                {% endfor %}
+                                {% for like in user.messagelike_set.all %}
+                                <div class="like-item">
+                                    <a href="{% url 'room' like.message.room.id %}">{{ like.message.body|truncatewords:10 }}</a> (Message in {{ like.message.room.name }}, liked on {{ like.message.created_at|date:"F j, Y" }})
+                                </div>
+                                {% endfor %}
+                                {% if not user.roomlike_set.exists and not user.messagelike_set.exists %}
+                                <p>No liked content.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="recent-activity" role="tabpanel" aria-labelledby="recent-activity-tab">
+                            {% include 'activities/activity_component.html' with messages=user_messages %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card-body">
-                <div class="card likes-section mt-3">
-                    <div class="card-body">
-                        <h4>Liked Content</h4>
-                        {% for like in user.roomlike_set.all %}
-                        <div class="like-item">
-                            <a href="{% url 'room' like.room.id %}">{{ like.room.name }}</a> (Room, liked on {{ like.created_at|date:"F j, Y" }})
-                        </div>
-                        {% endfor %}
-                        {% for like in user.messagelike_set.all %}
-                        <div class="like-item">
-                            <a href="{% url 'room' like.message.room.id %}">{{ like.message.body|truncatewords:10 }}</a> (Message in {{ like.message.room.name }}, liked on {{ like.message.created_at|date:"F j, Y" }})
-                        </div>
-                        {% endfor %}
-                        {% if not user.roomlike_set.exists and not user.messagelike_set.exists %}
-                        <p>No liked content.</p>
-                        {% endif %}
-                    </div>
-                </div>
-                {% include 'activities/activity_component.html' with messages=user_messages %}
             </div>
         </div>
     </div>

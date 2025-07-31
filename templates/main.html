@@ -24,7 +24,7 @@
     <script src="{% static 'js/theme.js' %}"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg fixed-top dynamic-navbar">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text-fill" viewBox="0 0 16 16">
@@ -57,8 +57,8 @@
                             <a class="nav-link" href="{% url 'users:register' %}">sign up</a>
                         </li>
                     {% endif %}
-                    <li class="nav-item dark-light-mobile">
-                        <button id="theme-toggle" class="btn-light-dark btn btn-outline-secondary ms-2" title="Toggle Dark Mode">
+                    <li class="nav-item dark-light-mobile" style="margin-left: 1px !important;">
+                        <button id="theme-toggle" class="M-L-btn" title="Toggle Dark Mode">
                             <i class="bi bi-sun-fill"></i>
                         </button>
                     </li>
@@ -66,58 +66,61 @@
             </div>
         </div>
     </nav>
-    {% if not request.user.is_authenticated and request.path == "/" %}
-    <div class="not-login-container">
-        <div class="not-login row align-items-center">
-
-            <!-- Left: Text -->
-            <div class="col-md-6">
-                <div class="welcome-text">
-                    <h1>
-                    Welcome to <span class="brand-name">Connection</span> Platform
-                    </h1>
-                    <h4>
-                    This platform enables you to create topics of interest in designated spaces, connecting you with a global community passionate about the same subjects<br>
-                    hence the name "Connection."
-                    </h4>
-                    <p>
-                    If you are new, we invite you to register an account to fully engage with our community.
-                    </p>
-                    <a href="{% url 'users:login' %}" class="btn btn-primary mb-3 login-btn">Login</a>
-                </div>
-            </div>
-
-            <!-- Right: Image -->
-            <div class="col-md-6 d-flex justify-content-center">
-                <div id="lottie-character"></div>
-            </div>
-
-        </div>
-        <hr class="w-hr">
-    </div>
-    <div class="scroll-down text-center mt-2 pb-5">
-        <p>Tap for Scroll down</p>
-        <a href="#more-content" class="animated-arrow d-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#ffd900" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
-            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
-            </svg>
-        </a>
-    </div>
-    {% endif %}
+    <!-- marginforallcontent -->
+    <div style="margin-top: 85px;"> 
+        {% if not request.user.is_authenticated and request.path == "/" %}
+        <div class="not-login-container">
+            <div class="not-login row align-items-center">
     
-    <div class="container mt-4 content-container" id="content-container">
-        {% block content %}
-        {% endblock %}
-    </div>
-
-    {% if not request.user.is_authenticated %}
-        <div class="blur-overlay" id="blur-overlay"></div>
-        <div class="blur-prompt" id="blur-prompt">
-            <p>Please log in or sign up to fully engage with our community.</p>
-            <a href="{% url 'users:login' %}" class="btn btn-primary">Login</a>
-            <a href="{% url 'users:register' %}" class="btn btn-outline-primary ms-2">Sign Up</a>
+                <!-- Left: Text -->
+                <div class="col-md-6">
+                    <div class="welcome-text">
+                        <h1>
+                        Welcome to <span class="brand-name">Connection</span> Platform
+                        </h1>
+                        <h4>
+                        This platform enables you to create topics of interest in designated spaces, connecting you with a global community passionate about the same subjects<br>
+                        hence the name "Connection."
+                        </h4>
+                        <p>
+                        If you are new, we invite you to register an account to fully engage with our community.
+                        </p>
+                        <a href="{% url 'users:login' %}" class="btn btn-primary mb-3 login-btn">Login</a>
+                    </div>
+                </div>
+    
+                <!-- Right: Image -->
+                <div class="col-md-6 d-flex justify-content-center">
+                    <div id="lottie-character" class="lottie-animation"></div>
+                </div>
+    
+            </div>
+            <hr class="w-hr">
         </div>
-    {% endif %}
+        <div class="scroll-down text-center mt-2 pb-5">
+            <p>Tap for Scroll down</p>
+            <a href="#more-content" class="animated-arrow d-inline-block">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#ffd900" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
+                </svg>
+            </a>
+        </div>
+        {% endif %}
+        
+        <div class="container mt-4 content-container" id="content-container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    
+        {% if not request.user.is_authenticated %}
+            <div class="blur-overlay" id="blur-overlay"></div>
+            <div class="blur-prompt" id="blur-prompt">
+                <p>Please log in or sign up to fully engage with our community.</p>
+                <a href="{% url 'users:login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'users:register' %}" class="btn btn-outline-primary ms-2">Sign Up</a>
+            </div>
+        {% endif %}
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

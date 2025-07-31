@@ -16,13 +16,17 @@
         <a href="{% url 'create-room' %}" class="btn btn-primary mb-3 create-btn">Create Room</a>
         {% endif %}
         <div id="content-to-blur">
-            {% include 'activities/feed_component.html' %}
+            <div id="rooms-section">
+                {% include 'activities/feed_component.html' %}
+            </div>
         </div>
     </div>
     <div class="col-md-4">
         <div id="content-to-blur">
             {% include 'activities/topics_component.html' %}
-            {% include 'activities/activity_component.html' %}
+            <div id="activity-section">
+                {% include 'activities/activity_component.html' %} 
+            </div>
         </div>
     </div>
 </div>
@@ -35,7 +39,7 @@
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    path: "{% static 'animations/wink.json' %}" // Replace with your JSON path
+    path: "{% static 'animations/wink.json' %}" 
   });
 </script>
 {% endblock %}
