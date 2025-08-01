@@ -147,7 +147,11 @@
                     </ul>
                     <div class="tab-content" id="profileTabsContent">
                         <div class="tab-pane fade show active" id="rooms" role="tabpanel" aria-labelledby="rooms-tab">
-                            <h3 class="card-title mb-3">Rooms {{ user.username }} has made</h3>
+                            {% if request.user.id == user.id %}
+                            <h3 class="card-title mb-3">Rooms that you have made</h3>
+                            {% else %}
+                            <h3 class="card-title mb-3">Rooms that {{ user.username }} has made</h3>
+                            {% endif %}
                             {% include 'activities/feed_component.html' with rooms=rooms %}
                         </div>
                         <div class="tab-pane fade" id="liked-content" role="tabpanel" aria-labelledby="liked-content-tab">

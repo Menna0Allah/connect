@@ -4,8 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('theme-toggle');
     const themeIcon = themeToggle.querySelector('i');
     const navbar = document.querySelector('.dynamic-navbar');
+    const passwordFields = document.querySelectorAll('input[type="password"]');
     let lastScrollTop = 0;
-
+    
     // Set initial icon based on current theme
     const currentTheme = html.getAttribute('data-theme') || 'light';
     updateIcon(currentTheme);
@@ -46,20 +47,21 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Prevent negative scroll values
     });
 
-    // Updated: Match Recent Activity section height to Rooms section without scrolling
-    function matchActivityHeight() {
-        const roomsSection = document.getElementById('rooms-section');
-        const activitySection = document.getElementById('activity-section');
-        if (roomsSection && activitySection) {
-            activitySection.style.height = 'auto'; // Reset height
-            const roomsHeight = roomsSection.offsetHeight;
-            // Set height to 95% of Rooms section to account for padding/margins
-            activitySection.style.height = `${Math.floor(roomsHeight * 0.95)}px`;
-            activitySection.style.overflow = 'hidden'; // Prevent scrolling
-        }
-    }
+    passwordFields.forEach(field => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'input-group';
+        field.parentNode.insertBefore(wrapper, field);
+        wrapper.appendChild(field);
 
-    // Run on load and resize
-    matchActivityHeight();
-    window.addEventListener('resize', matchActivityHeight);
+        const toggle = document.createElement('span');
+        toggle.className = 'input-group-text';
+        toggle.innerHTML = '<i class="bi bi-eye"></i>';
+        wrapper.appendChild(toggle);
+
+        toggle.addEventListener('click', function() {
+            const isPassword = field.type === 'password';
+            field.type = isPassword ? 'text' : 'password';
+            toggle.innerHTML = `<i class="bi bi-${isPassword ? 'eye-slash' : 'eye'}"></i>`;
+        });    
+    });
 });

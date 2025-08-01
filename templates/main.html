@@ -100,7 +100,7 @@
         <div class="scroll-down text-center mt-2 pb-5">
             <p>Tap for Scroll down</p>
             <a href="#more-content" class="animated-arrow d-inline-block">
-                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#ffd900" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="55" height="60" fill="#ffd900" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
                 </svg>
             </a>
@@ -148,28 +148,5 @@
             });
         </script>
     {% endif %}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const passwordFields = document.querySelectorAll('input[type="password"]');
-            passwordFields.forEach(field => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'input-group';
-                field.parentNode.insertBefore(wrapper, field);
-                wrapper.appendChild(field);
-
-                const toggle = document.createElement('span');
-                toggle.className = 'input-group-text';
-                toggle.innerHTML = '<i class="bi bi-eye"></i>';
-                wrapper.appendChild(toggle);
-
-                toggle.addEventListener('click', function() {
-                    const isPassword = field.type === 'password';
-                    field.type = isPassword ? 'text' : 'password';
-                    toggle.innerHTML = `<i class="bi bi-${isPassword ? 'eye-slash' : 'eye'}"></i>`;
-                });    
-            });
-        });
-    </script>
 </body>
 </html>
