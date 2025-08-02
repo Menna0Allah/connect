@@ -1,4 +1,8 @@
+![Connect Screenshot](screenshots/website-screens.png)
+
 # Connect - A Django Web Application
+
+**Visit the live app: [mennaallah.pythonanywhere.com](https://mennaallah.pythonanywhere.com)**
 
 This document provides a complete overview of the Connect project, its structure, features, and the key backend and frontend development concepts used in its creation.
 
@@ -176,3 +180,9 @@ The project emphasizes modern Django best practices and frontend design principl
 - **Testing**: Add unit tests for views, forms, and models using Django’s `TestCase`.
 - **Enhanced Search**: Implement autocomplete or suggestions in the search bar.
 - **Profile Enhancements**: Add bio or additional user details to `UserProfile`.
+
+## 7. Share the App
+- Shared the live app at **https://mennaallah.pythonanywhere.com**.
+- Noted that the first load may be slow due to the free tier’s app sleep behavior.
+
+This deployment process ensures the application runs on PythonAnywhere’s free tier, with all features (user authentication, room/message CRUD, likes, profiles, and responsive design) fully functional.
