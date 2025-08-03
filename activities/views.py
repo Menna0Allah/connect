@@ -5,7 +5,7 @@ from .models import *
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import Paginator  # Added for pagination
+from django.core.paginator import Paginator 
 
 # Create your views here.
 

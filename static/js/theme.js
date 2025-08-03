@@ -1,4 +1,3 @@
-// static/js/theme.js
 document.addEventListener('DOMContentLoaded', function() {
     const html = document.documentElement;
     const themeToggle = document.getElementById('theme-toggle');
@@ -7,11 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordFields = document.querySelectorAll('input[type="password"]');
     let lastScrollTop = 0;
     
-    // Set initial icon based on current theme
     const currentTheme = html.getAttribute('data-theme') || 'light';
     updateIcon(currentTheme);
 
-    // Toggle theme on button click
     themeToggle.addEventListener('click', function() {
         const currentTheme = html.getAttribute('data-theme');
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -20,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateIcon(newTheme);
     });
 
-    // Update icon based on theme
     function updateIcon(theme) {
         if (theme === 'dark') {
             themeIcon.classList.replace('bi-moon-fill', 'bi-sun-fill');
@@ -31,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Navbar scroll behavior
     window.addEventListener('scroll', function() {
         let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
 
@@ -44,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
             navbar.classList.remove('hidden');
             navbar.classList.add('visible');
         }
-        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Prevent negative scroll values
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
     });
 
     passwordFields.forEach(field => {

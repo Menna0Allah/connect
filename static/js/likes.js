@@ -1,4 +1,4 @@
-// Added: JavaScript for handling like/unlike actions via AJAX
+// handling like/unlike actions via AJAX
 document.addEventListener('DOMContentLoaded', function() {
     const likeButtons = document.querySelectorAll('.like-btn');
     
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Helper function to get CSRF token
+    // function to get CSRF token
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {

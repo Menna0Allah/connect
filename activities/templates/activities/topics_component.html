@@ -35,7 +35,7 @@
                 {% endif %}
             </li>
             {% endfor %}
-            <!-- Updated: Container for additional topics -->
+            
             {% if topics|length > 5 %}
             <li id="extra-topics" class="list-group-item extra-topics" style="display: none;">
                 {% for topic in topics|slice:"5:" %}
@@ -57,7 +57,7 @@
                 </div>
                 {% endfor %}
             </li>
-            <!-- Updated: See More and See Less buttons -->
+            
             <li class="list-group-item">
                 <button id="see-more-topics" class="btn btn-primary btn-sm see-more-btn">See More</button>
                 <button id="see-less-topics" class="btn btn-primary btn-sm see-less-btn" style="display: none;">See Less</button>
@@ -78,7 +78,7 @@
             });
         });
 
-        // Updated: Toggle functionality for See More/See Less
+        
         const seeMoreBtn = document.getElementById('see-more-topics');
         const seeLessBtn = document.getElementById('see-less-topics');
         const extraTopics = document.getElementById('extra-topics');
